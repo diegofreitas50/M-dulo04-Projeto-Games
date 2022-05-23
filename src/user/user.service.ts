@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
+  users: User[] = [];
+
   findAll() {
-    return 'Burcar todos os users';
+    return this.users;
   }
 
-  create() {
-    return 'Criar um user';
+  create(createUserDto: CreateUserDto) {
+    const user: User = { id: 'randon_id', ...createUserDto };
+
+    this.users.push(user);
+
+    return user;
   }
 }
