@@ -29,7 +29,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## 🛠️ Priscipais ferramentas utilizadas
+## Priscipais ferramentas utilizadas
 
 * NodeJS
 * TypeScript
@@ -37,11 +37,11 @@ $ npm run start:prod
 * PostgreeSQL
 
 
-## ✒️ Autores
+## Autores
 
 * **Diego Freitas** - [GITHUB](https://github.com/diegofreitas50)
 
 
-## 📄 Licença
+## Licença
 
 Este projeto está sob a licença: Mozilla Public License Version 2.0 - veja o arquivo [LICENSE.md](https://github.com/diegofreitas50/Projeto3-Rick-and-Morty-API-BackEnd/blob/main/LICENSE) para detalhes.
