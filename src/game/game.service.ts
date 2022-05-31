@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
@@ -26,10 +30,14 @@ export class GameService {
     return this.findById(id);
   }
 
-  create(dto: CreateGameDto): Promise<Game> {
+  async create(dto: CreateGameDto): Promise<Game> {
     const data: Game = { ...dto };
 
-    return this.prisma.game.create({ data }).catch(this.handleError);;
+    try {
+      return await this.prisma.game.create({ data });
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
   async update(id: string, dto: UpdateGameDto): Promise<Game> {

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -26,10 +30,14 @@ export class UserService {
     return this.findById(id);
   }
 
-  create(dto: CreateUserDto): Promise<User> {
+  async create(dto: CreateUserDto): Promise<User> {
     const data: User = { ...dto };
 
-    return this.prisma.user.create({ data }).catch(this.handleError);;
+    try {
+      return await this.prisma.user.create({ data });
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {

@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { GenderService } from './gender.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
@@ -54,10 +56,11 @@ export class GenderController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Deletar gênero pelo ID.',
   })
   delete(@Param('id') id: string) {
-    return this.genderService.delete(id);
+    this.genderService.delete(id);
   }
 }
