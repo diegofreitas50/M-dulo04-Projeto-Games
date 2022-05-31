@@ -30,11 +30,12 @@ export class UserService {
     return this.findById(id);
   }
 
-  async create(dto: CreateUserDto): Promise<User> {
+  create(dto: CreateUserDto): Promise<User> {
+    delete dto.confirmPassword;
     const data: User = { ...dto };
 
     try {
-      return await this.prisma.user.create({ data });
+      return this.prisma.user.create({ data });
     } catch (error) {
       return this.handleError(error);
     }
@@ -42,6 +43,8 @@ export class UserService {
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     await this.findById(id);
+
+    delete dto.confirmPassword;
 
     const data: Partial<User> = { ...dto };
 

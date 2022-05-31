@@ -30,11 +30,11 @@ export class GenderService {
     return this.findById(id);
   }
 
-  async create(dto: CreateGenderDto): Promise<Gender> {
+  create(dto: CreateGenderDto): Promise<Gender> {
     const data: Gender = { ...dto };
 
     try {
-      return await this.prisma.gender.create({ data });
+      return this.prisma.gender.create({ data });
     } catch (error) {
       return this.handleError(error);
     }
