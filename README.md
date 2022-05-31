@@ -16,6 +16,12 @@ https://github.com/diegofreitas50/Modulo04-Projeto-Games
 npm install
 ```
 
+## Criando tabelas no banco de dados local
+
+```bash
+npx prisma db push
+```
+
 ## Rodando o app
 
 ```bash
