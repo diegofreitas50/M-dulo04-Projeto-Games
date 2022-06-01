@@ -47,3 +47,12 @@ model Gender {
 
   @@map("gender")
 }
+
+model Profile {
+  id String @id @default(uuid())
+  title        String
+  imageUrl     String        @map("image_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("profile")
+}
