@@ -10,8 +10,12 @@ import { Game } from './entities/game.entity';
 export class GameService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Promise<Game[]> {
-    return this.prisma.game.findMany();
+  findAll() {
+    return this.prisma.game.findMany({
+      include: {
+        genders: true,
+      },
+    });
   }
 
   async findById(id: string): Promise<Game> {
@@ -24,8 +28,11 @@ export class GameService {
     return record;
   }
 
-  async findOne(id: string): Promise<Game> {
-    return this.findById(id);
+  async findOne(id: string) {
+    return await this.prisma.game.findUnique({
+      where: { id },
+      include: { genders: true },
+    });
   }
 
   async create(dto: CreateGameDto): Promise<Game> {
@@ -37,8 +44,8 @@ export class GameService {
       },
 
       genders: {
-        connect: dto.genders.map((genderId) => ({
-          id: genderId,
+        connect: dto.genders.map((gender) => ({
+          name: gender,
         })),
       },
 

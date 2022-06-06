@@ -27,7 +27,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Visualizar um usuário' })
+  @ApiOperation({ summary: 'Visualizar um usuário pelo Id' })
   findOne(@Param('id') id: string): Promise<User> {
     return this.userService.findOne(id);
   }

@@ -57,12 +57,12 @@ export class CreateGameDto {
 
   @IsUUID(undefined, {each: true})
   @ApiProperty({
-    description: 'Lista com os Ids dos Generos dos jogos',
+    description: 'Lista dos Generos dos jogos',
     example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',
   })
   genders: string[];
 
-  @IsUUID(undefined, {each: true})
+  @IsString()
   @ApiProperty({
     description: 'Lista com os IDs dos perfis ',
     example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',

@@ -4,14 +4,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { Profile } from './entities/profile.entity';
 
 @Injectable()
 export class ProfileService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.profile.findMany();
+  async findAll() {
+    return await this.prisma.profile.findMany();
   }
 
   async findById(id: string) {
