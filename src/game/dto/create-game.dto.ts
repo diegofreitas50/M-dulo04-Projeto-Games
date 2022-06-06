@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive, IsString, IsUrl } from 'class-validator';
+import { IsNumber, IsPositive, IsString, IsUrl, IsUUID } from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -54,4 +54,18 @@ export class CreateGameDto {
     example: 'https://youtu.be/AqturoCh5lM',
   })
   gameplayYouTubeUrl: string;
+
+  @IsUUID(undefined, {each: true})
+  @ApiProperty({
+    description: 'Lista com os Ids dos Generos dos jogos',
+    example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',
+  })
+  genders: string[];
+
+  @IsUUID(undefined, {each: true})
+  @ApiProperty({
+    description: 'Lista com os IDs dos perfis ',
+    example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',
+  })
+  profiles: string[];
 }

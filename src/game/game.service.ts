@@ -1,9 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
@@ -30,37 +28,43 @@ export class GameService {
     return this.findById(id);
   }
 
-  create(dto: CreateGameDto): Promise<Game> {
-    const data: Game = { ...dto };
+  async create(dto: CreateGameDto): Promise<Game> {
+    const data: Prisma.GameUncheckedCreateInput = {
+      profiles: {
+        connect: dto.profiles.map((profileId) => ({
+          id: profileId,
+        })),
+      },
 
-    try {
-      return this.prisma.game.create({ data });
-    } catch (error) {
-      return this.handleError(error);
-    }
+      genders: {
+        connect: dto.genders.map((genderId) => ({
+          id: genderId,
+        })),
+      },
+
+      title: dto.title,
+      coverImageUrl: dto.coverImageUrl,
+      description: dto.description,
+      year: dto.year,
+      imdbScore: dto.imdbScore,
+      trailerYouTubeUrl: dto.trailerYouTubeUrl,
+      gameplayYouTubeUrl: dto.gameplayYouTubeUrl,
+    };
+
+    return await this.prisma.game.create({ data }).catch(handleError);
   }
 
   async update(id: string, dto: UpdateGameDto): Promise<Game> {
     await this.findById(id);
 
-    const data: Partial<Game> = { ...dto };
+    const data = { ...dto };
 
-    return this.prisma.game
-      .update({ where: { id }, data })
-      .catch(this.handleError);
+    return this.prisma.game.update({ where: { id }, data }).catch(handleError);
   }
 
   async delete(id: string) {
     await this.findById(id);
 
     await this.prisma.game.delete({ where: { id } });
-  }
-
-  handleError(error: Error): undefined {
-    const errorLines = error.message?.split('\n');
-    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
-    throw new UnprocessableEntityException(
-      lastErrorLine || 'Algum erro ocorreu ao executar a operação',
-    );
   }
 }

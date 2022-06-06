@@ -18,6 +18,8 @@ model User {
   cpf      String  @unique
   isAdmin  Boolean @default(false) @map("is_admin")
 
+  profiles Profile[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -34,14 +36,26 @@ model Game {
   trailerYouTubeUrl  String @map("trailer_youtube_url")
   gameplayYouTubeUrl String @map("gameplay_youtube_url")
 
+  profiles Profile[]
+
+  genders Gender[]
+
+  // profiles GamesFromProfile[]
+  // genders  GameFromGender[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   @@map("game")
 }
 
 model Gender {
-  id        String   @id @default(uuid())
-  name      String   @unique
+  id   String @id @default(uuid())
+  name String @unique
+
+  games Game[]
+
+  // games GameFromGender[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -49,10 +63,45 @@ model Gender {
 }
 
 model Profile {
-  id String @id @default(uuid())
-  title        String
-  imageUrl     String        @map("image_url")
+  id       String @id @default(uuid())
+  title    String
+  imageUrl String @map("image_url")
+
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @map("user_id")
+
+  games Game[]
+
+  // games GamesFromProfile[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   @@map("profile")
 }
+
+// model GamesFromProfile {
+//   id        String   @id @default(uuid())
+//   game      Game     @relation(fields: [gameId], references: [id])
+//   gameId    String   @map("game_id")
+//   profile   Profile  @relation(fields: [profileId], references: [id])
+//   profileId String   @map("profile_id")
+//   favorite  Boolean  @default(false)
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @updatedAt @map("updated_at")
+
+//   @@unique([gameId, profileId])
+//   @@map("games_from_profile")
+// }
+
+// model GameFromGender {
+//   id        String   @id @default(uuid())
+//   game      Game     @relation(fields: [gameId], references: [id])
+//   gameId    String   @map("game_id")
+//   gender    Gender   @relation(fields: [genderId], references: [id])
+//   genderId  String   @map("gender_id")
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @updatedAt @map("updated_at")
+
+//   @@unique([gameId, genderId])
+//   @@map("game_gender")
+// }

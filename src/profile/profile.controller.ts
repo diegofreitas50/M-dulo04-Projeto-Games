@@ -3,7 +3,6 @@ import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Profile } from './entities/profile.entity';
 
 @ApiTags('profile')
 @Controller('profile')
@@ -14,7 +13,7 @@ export class ProfileController {
   @ApiOperation({
     summary: 'Criar novo perfil de usuário.',
   })
-  create(@Body() dto: CreateProfileDto): Promise<Profile> {
+  create(@Body() dto: CreateProfileDto) {
     return this.profileService.create(dto);
   }
 
