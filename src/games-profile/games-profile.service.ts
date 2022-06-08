@@ -38,11 +38,15 @@ export class GamesProfileService {
       .catch(handleError);
   }
 
-  async findOneProfile(profileId: string) {
-    await this.findById(profileId);
-    
+  async findOneProfile(id: string) {
+    const record = await this.prisma.profile.findUnique({ where: { id } });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
+    }
+
     return await this.prisma.gamesProfile.findMany({
-      where: { profileId },
+      where: { profileId: id },
       select: {
         id: true,
         game: {
@@ -61,6 +65,16 @@ export class GamesProfileService {
     });
   }
 
+  async findById(id: string) {
+    const record = await this.prisma.gamesProfile.findUnique({ where: { id } });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
+    }
+
+    return record;
+  }
+  
   async updateFav(id: string, dto: UpdateGamesProfileDto) {
     await this.findById(id);
 
@@ -90,16 +104,6 @@ export class GamesProfileService {
     await this.prisma.gamesProfile.delete({
       where: { id },
     });
-    throw new HttpException('Deletado com sucesso.', 204);
-  }
-
-  async findById(id: string) {
-    const record = await this.prisma.gamesProfile.findUnique({ where: { id } });
-
-    if (!record) {
-      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
-    }
-
-    return record;
+    throw new HttpException('', 204);
   }
 }

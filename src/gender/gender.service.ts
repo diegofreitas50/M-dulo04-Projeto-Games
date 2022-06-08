@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
@@ -25,7 +21,7 @@ export class GenderService {
   async findAll() {
     const allGenders = await this.prisma.gender.findMany();
 
-    if (allGenders.length === 0){
+    if (allGenders.length === 0) {
       throw new NotFoundException('Não há gêneros cadastrados.');
     }
 
@@ -48,8 +44,6 @@ export class GenderService {
     return await this.prisma.gender.findUnique({ where: { id } });
   }
 
-
-
   async update(id: string, dto: UpdateGenderDto) {
     await this.findById(id);
 
@@ -67,7 +61,7 @@ export class GenderService {
 
     await this.prisma.gender.delete({ where: { id } });
 
-    throw new HttpException('Deletado com sucesso.', 204);
+    throw new HttpException('', 204);
   }
 
   dataTreatment(data: string) {

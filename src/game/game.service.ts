@@ -76,6 +76,6 @@ export class GameService {
 
     await this.prisma.game.delete({ where: { id } });
 
-    throw new HttpException('Deletado com sucesso.', 204);
+    throw new HttpException('', 204);
   }
 }

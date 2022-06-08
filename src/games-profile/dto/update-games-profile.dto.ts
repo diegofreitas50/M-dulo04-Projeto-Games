@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsBoolean } from 'class-validator';
 
-class FavUpdate {
+class FavoriteUpdate {
   @IsBoolean()
   @ApiProperty({
     description: 'Favoritar jogo?',
@@ -10,4 +10,4 @@ class FavUpdate {
   favorite: boolean;
 }
 
-export class UpdateGamesProfileDto extends PartialType(FavUpdate) {}
+export class UpdateGamesProfileDto extends PartialType(FavoriteUpdate) {}

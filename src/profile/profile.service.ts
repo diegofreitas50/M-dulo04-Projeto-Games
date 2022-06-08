@@ -49,7 +49,7 @@ export class ProfileService {
     });
 
     if (allProfilles.length === 0){
-      throw new NotFoundException('Não há perfis cadastrados.');
+      throw new NotFoundException('Não há perfis cadastrados para este userId.');
     }
 
     return allProfilles;
@@ -102,6 +102,6 @@ export class ProfileService {
 
     await this.prisma.profile.delete({ where: { id } });
 
-    throw new HttpException('Deletado com sucesso.', 204);
+    throw new HttpException('', 204);
   }
 }

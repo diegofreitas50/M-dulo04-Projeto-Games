@@ -106,6 +106,6 @@ export class UserService {
 
     await this.prisma.user.delete({ where: { id } });
 
-    throw new HttpException('Deletado com sucesso.', 204);
+    // throw new HttpException('', 204);
   }
 }
