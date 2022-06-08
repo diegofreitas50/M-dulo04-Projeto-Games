@@ -6,8 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -21,8 +19,8 @@ export class GameController {
 
   @Post()
   @ApiOperation({ summary: 'Cadastrar um novo jogo' })
-  create(@Body() createGameDto: CreateGameDto) {
-    return this.gameService.create(createGameDto);
+  create(@Body() dto: CreateGameDto) {
+    return this.gameService.create(dto);
   }
 
   @Get()
@@ -44,7 +42,6 @@ export class GameController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remover um jogo pelo id' })
   delete(@Param('id') id: string) {
     this.gameService.delete(id);

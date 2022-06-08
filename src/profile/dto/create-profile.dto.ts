@@ -19,16 +19,8 @@ export class CreateProfileDto {
 
   @IsUUID()
   @ApiProperty({
-    description: 'Id do Usuário detentor do perfil.',
+    description: 'Id do Usuário pai.',
     example: '728e20de-e51c-4a0e-9dbf-bbb1c0c6136a',
   })
   userId: string;
-
-  @IsUUID(undefined, {each: true})
-  @IsOptional()
-  @ApiProperty({
-    description: 'Lista com os Ids dos jogos',
-    example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',
-  })
-  games?: string[];
 }

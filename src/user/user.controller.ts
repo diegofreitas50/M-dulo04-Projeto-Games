@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -20,6 +18,12 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Post('create')
+  @ApiOperation({ summary: 'Criar um usuário' })
+  create(@Body() dto: CreateUserDto): Promise<User> {
+    return this.userService.create(dto);
+  }
+
   @Get('find')
   @ApiOperation({ summary: 'Listar todos os usuários' })
   findAll(): Promise<User[]> {
@@ -32,12 +36,6 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Post('create')
-  @ApiOperation({ summary: 'Criar um usuário' })
-  create(@Body() dto: CreateUserDto): Promise<User> {
-    return this.userService.create(dto);
-  }
-
   @Patch(':id')
   @ApiOperation({ summary: 'Editar um usuário pelo id' })
   update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
@@ -45,7 +43,6 @@ export class UserController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remover um usuário pelo id',
   })

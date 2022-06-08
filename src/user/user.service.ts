@@ -1,7 +1,8 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -25,28 +26,7 @@ export class UserService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Promise<User[]> {
-    return this.prisma.user.findMany({select: this.userSelect});
-  }
-
-  async findById(id: string): Promise<User> {
-    const record = await this.prisma.user.findUnique({
-      where: { id },
-      select: this.userSelect,
-    });
-
-    if (!record) {
-      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
-    }
-
-    return record;
-  }
-
-  async findOne(id: string): Promise<User> {
-    return this.findById(id);
-  }
-
-  async create(dto: CreateUserDto): Promise<User> {
+  async create(dto: CreateUserDto) {
     if (dto.password != dto.confirmPassword) {
       throw new BadRequestException('As senhas informadas não são iguais.');
     }
@@ -63,6 +43,40 @@ export class UserService {
     } catch (error) {
       return handleError(error);
     }
+  }
+
+  async findAll() {
+    const allUsers = await this.prisma.user.findMany({
+      select: this.userSelect,
+    });
+
+    if (allUsers.length === 0) {
+      throw new NotFoundException('Não há usuários cadastrados.');
+    }
+
+    return allUsers;
+  }
+
+  async findById(id: string) {
+    const record = await this.prisma.user.findUnique({
+      where: { id },
+      select: this.userSelect,
+    });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
+    }
+
+    return record;
+  }
+
+  async findOne(id: string) {
+    await this.findById(id);
+
+    return await this.prisma.user.findUnique({
+      where: { id },
+      select: this.userSelect,
+    });
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
@@ -91,7 +105,7 @@ export class UserService {
     await this.findById(id);
 
     await this.prisma.user.delete({ where: { id } });
+
+    throw new HttpException('Deletado com sucesso.', 204);
   }
-
-
 }

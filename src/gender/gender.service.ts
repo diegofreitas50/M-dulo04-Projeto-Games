@@ -1,7 +1,9 @@
 import {
+  HttpException,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
 import { CreateGenderDto } from './dto/create-gender.dto';
@@ -12,11 +14,25 @@ import { Gender } from './entities/gender.entity';
 export class GenderService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Promise<Gender[]> {
-    return this.prisma.gender.findMany();
+  async create(dto: CreateGenderDto) {
+    const data: Prisma.GenderCreateInput = { name: dto.name };
+
+    data.name = this.dataTreatment(data.name);
+
+    return await this.prisma.gender.create({ data }).catch(handleError);
   }
 
-  async findById(id: string): Promise<Gender> {
+  async findAll() {
+    const allGenders = await this.prisma.gender.findMany();
+
+    if (allGenders.length === 0){
+      throw new NotFoundException('Não há gêneros cadastrados.');
+    }
+
+    return allGenders;
+  }
+
+  async findById(id: string) {
     const record = await this.prisma.gender.findUnique({ where: { id } });
 
     if (!record) {
@@ -26,24 +42,20 @@ export class GenderService {
     return record;
   }
 
-  async findOne(id: string): Promise<Gender> {
-    return this.findById(id);
+  async findOne(id: string) {
+    await this.findById(id);
+
+    return await this.prisma.gender.findUnique({ where: { id } });
   }
 
-  create(dto: CreateGenderDto): Promise<Gender> {
-    const data: Gender = { ...dto };
 
-    try {
-      return this.prisma.gender.create({ data });
-    } catch (error) {
-      return handleError(error);
-    }
-  }
 
-  async update(id: string, dto: UpdateGenderDto): Promise<Gender> {
+  async update(id: string, dto: UpdateGenderDto) {
     await this.findById(id);
 
     const data: Partial<Gender> = { ...dto };
+
+    data.name = await this.dataTreatment(data.name);
 
     return this.prisma.gender
       .update({ where: { id }, data })
@@ -54,5 +66,14 @@ export class GenderService {
     await this.findById(id);
 
     await this.prisma.gender.delete({ where: { id } });
+
+    throw new HttpException('Deletado com sucesso.', 204);
+  }
+
+  dataTreatment(data: string) {
+    return data
+      .normalize('NFD')
+      .replace(/[^a-zA-Zs]/g, '')
+      .toLowerCase();
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
@@ -8,24 +8,6 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 @Injectable()
 export class ProfileService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async findAll() {
-    return await this.prisma.profile.findMany();
-  }
-
-  async findById(id: string) {
-    const record = await this.prisma.profile.findUnique({ where: { id } });
-
-    if (!record) {
-      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
-    }
-
-    return record;
-  }
-
-  async findOne(id: string) {
-    return this.findById(id);
-  }
 
   async create(dto: CreateProfileDto) {
     const data: Prisma.ProfileCreateInput = {
@@ -39,10 +21,57 @@ export class ProfileService {
     };
 
     return await this.prisma.profile
-    .create({
-      data,
+      .create({
+        data,
+        select: {
+          id: true,
+          imageUrl: true,
+          title: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      })
+      .catch(handleError);
+  }
+
+  async findAll(userId: string) {
+    const allProfilles = await this.prisma.profile.findMany({
+      where: { userId },
       select: {
         id: true,
+        imageUrl: true,
+        title: true,
+      },
+    });
+
+    if (allProfilles.length === 0){
+      throw new NotFoundException('Não há perfis cadastrados.');
+    }
+
+    return allProfilles;
+  }
+
+  async findById(id: string) {
+    const record = await this.prisma.profile.findUnique({ where: { id } });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
+    }
+
+    return record;
+  }
+
+  async findOne(id: string) {
+    await this.findById(id);
+
+    return await this.prisma.profile.findUnique({
+      where: { id },
+      select: {
+        title: true,
         imageUrl: true,
         user: {
           select: {
@@ -50,9 +79,9 @@ export class ProfileService {
             name: true,
           },
         },
+        _count: { select: { games: true } },
       },
-    })
-    .catch(handleError);
+    });
   }
 
   async update(id: string, dto: UpdateProfileDto) {
@@ -72,5 +101,7 @@ export class ProfileService {
     await this.findById(id);
 
     await this.prisma.profile.delete({ where: { id } });
+
+    throw new HttpException('Deletado com sucesso.', 204);
   }
 }

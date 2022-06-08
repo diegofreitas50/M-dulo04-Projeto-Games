@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive, IsString, IsUrl, IsUUID } from 'class-validator';
+import { IsNumber, IsOptional, IsPositive, IsString, IsUrl, IsUUID } from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -28,7 +28,7 @@ export class CreateGameDto {
   @IsNumber()
   @IsPositive()
   @ApiProperty({
-    description: 'Ano de lançamento do jogo.',
+    description: 'Ano em que o jogo foi lançado.',
     example: 1990,
   })
   year: number;
@@ -36,7 +36,7 @@ export class CreateGameDto {
   @IsNumber()
   @IsPositive()
   @ApiProperty({
-    description: 'Score no IMDB',
+    description: 'Score IMDB',
     example: 9.2,
   })
   imdbScore: number;
@@ -55,17 +55,11 @@ export class CreateGameDto {
   })
   gameplayYouTubeUrl: string;
 
-  @IsUUID(undefined, {each: true})
-  @ApiProperty({
-    description: 'Lista dos Generos dos jogos',
-    example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',
-  })
-  genders: string[];
-
   @IsString()
+  @IsOptional()
   @ApiProperty({
-    description: 'Lista com os IDs dos perfis ',
-    example: '0c4b59bb-e169-40a4-81f5-4c34d2c2ca4b',
+    description: 'Genero dos jogos',
+    example: 'Aventura',
   })
-  profiles: string[];
+  genders: string;
 }

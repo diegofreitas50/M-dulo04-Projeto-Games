@@ -1,52 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
-import { Game } from './entities/game.entity';
 
 @Injectable()
 export class GameService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.game.findMany({
-      include: {
-        genders: true,
-      },
-    });
-  }
-
-  async findById(id: string): Promise<Game> {
-    const record = await this.prisma.game.findUnique({ where: { id } });
-
-    if (!record) {
-      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
-    }
-
-    return record;
-  }
-
-  async findOne(id: string) {
-    return await this.prisma.game.findUnique({
-      where: { id },
-      include: { genders: true },
-    });
-  }
-
-  async create(dto: CreateGameDto): Promise<Game> {
-    const data: Prisma.GameUncheckedCreateInput = {
-      profiles: {
-        connect: dto.profiles.map((profileId) => ({
-          id: profileId,
-        })),
-      },
-
+  async create(dto: CreateGameDto) {
+    const data: Prisma.GameCreateInput = {
       genders: {
-        connect: dto.genders.map((gender) => ({
-          name: gender,
-        })),
+        connectOrCreate: {
+          create: { name: dto.genders },
+          where: { name: dto.genders },
+        },
       },
 
       title: dto.title,
@@ -61,7 +30,40 @@ export class GameService {
     return await this.prisma.game.create({ data }).catch(handleError);
   }
 
-  async update(id: string, dto: UpdateGameDto): Promise<Game> {
+  async findAll() {
+    const allGames = await this.prisma.game.findMany({
+      include: {
+        genders: true,
+      },
+    });
+
+    if (allGames.length === 0) {
+      throw new NotFoundException('Não há jogos cadastrados.');
+    }
+
+    return allGames;
+  }
+
+  async findById(id: string) {
+    const record = await this.prisma.game.findUnique({ where: { id } });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
+    }
+
+    return record;
+  }
+
+  async findOne(id: string) {
+    await this.findById(id);
+
+    return await this.prisma.game.findUnique({
+      where: { id },
+      include: { genders: true },
+    });
+  }
+
+  async update(id: string, dto: UpdateGameDto) {
     await this.findById(id);
 
     const data = { ...dto };
@@ -73,5 +75,7 @@ export class GameService {
     await this.findById(id);
 
     await this.prisma.game.delete({ where: { id } });
+
+    throw new HttpException('Deletado com sucesso.', 204);
   }
 }
