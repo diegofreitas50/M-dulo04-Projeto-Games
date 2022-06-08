@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
@@ -66,7 +66,14 @@ export class GameService {
   async update(id: string, dto: UpdateGameDto) {
     await this.findById(id);
 
-    const data = { ...dto };
+    const data: Prisma.GameUpdateInput = {
+      genders: {
+        connectOrCreate: {
+          create: { name: dto.genders },
+          where: { name: dto.genders },
+        },
+      },
+    };
 
     return this.prisma.game.update({ where: { id }, data }).catch(handleError);
   }
@@ -75,7 +82,5 @@ export class GameService {
     await this.findById(id);
 
     await this.prisma.game.delete({ where: { id } });
-
-    throw new HttpException('', 204);
   }
 }

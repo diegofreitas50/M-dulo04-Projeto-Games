@@ -22,34 +22,34 @@ export class UserController {
 
   @Post('create')
   @ApiOperation({ summary: 'Criar um usuário' })
-  create(@Body() dto: CreateUserDto): Promise<User> {
+  create(@Body() dto: CreateUserDto) {
     return this.userService.create(dto);
   }
 
   @Get('find')
   @ApiOperation({ summary: 'Listar todos os usuários' })
-  findAll(): Promise<User[]> {
+  findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Visualizar um usuário pelo Id' })
-  findOne(@Param('id') id: string): Promise<User> {
+  findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Editar um usuário pelo id' })
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     return this.userService.update(id, dto);
   }
 
-  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
   @ApiOperation({
     summary: 'Remover um usuário pelo id',
   })
   delete(@Param('id') id: string) {
-    this.userService.delete(id);
+    return this.userService.delete(id);
   }
 }

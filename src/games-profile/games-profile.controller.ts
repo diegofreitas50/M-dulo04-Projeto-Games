@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { GamesProfileService } from './games-profile.service';
 import { CreateGamesProfileDto } from './dto/create-games-profile.dto';
@@ -44,6 +46,7 @@ export class GamesProfileController {
     return this.gamesProfileService.updateFav(id, dto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('games-profile/:gamesProfileId')
   @ApiOperation({
     summary: 'Remover jogo do Perfil prlo Id do addGame.',

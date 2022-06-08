@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -38,11 +37,9 @@ export class UserService {
       password: await bcrypt.hash(dto.password, 10),
     };
 
-    try {
-      return this.prisma.user.create({ data, select: this.userSelect });
-    } catch (error) {
-      return handleError(error);
-    }
+    return this.prisma.user
+      .create({ data, select: this.userSelect })
+      .catch(handleError);
   }
 
   async findAll() {
@@ -79,7 +76,7 @@ export class UserService {
     });
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<User> {
+  async update(id: string, dto: UpdateUserDto) {
     await this.findById(id);
 
     if (dto.password) {
@@ -105,7 +102,5 @@ export class UserService {
     await this.findById(id);
 
     await this.prisma.user.delete({ where: { id } });
-
-    // throw new HttpException('', 204);
   }
 }

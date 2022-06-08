@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { GenderService } from './gender.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
@@ -22,7 +24,7 @@ export class GenderController {
   @ApiOperation({
     summary: 'Criar novo Gênero.',
   })
-  create(@Body() dto: CreateGenderDto): Promise<Gender> {
+  create(@Body() dto: CreateGenderDto) {
     return this.genderService.create(dto);
   }
 
@@ -30,7 +32,7 @@ export class GenderController {
   @ApiOperation({
     summary: 'Listar todos os Gêneros.',
   })
-  findAll(): Promise<Gender[]> {
+  findAll() {
     return this.genderService.findAll();
   }
 
@@ -38,7 +40,7 @@ export class GenderController {
   @ApiOperation({
     summary: 'Visualizar um gênero pelo ID.',
   })
-  findOne(@Param('id') id: string): Promise<Gender> {
+  findOne(@Param('id') id: string) {
     return this.genderService.findOne(id);
   }
 
@@ -49,15 +51,16 @@ export class GenderController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateGenderDto,
-  ): Promise<Gender> {
+  ) {
     return this.genderService.update(id, dto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   @ApiOperation({
     summary: 'Deletar gênero pelo ID.',
   })
   delete(@Param('id') id: string) {
-    this.genderService.delete(id);
+    return this.genderService.delete(id);
   }
 }

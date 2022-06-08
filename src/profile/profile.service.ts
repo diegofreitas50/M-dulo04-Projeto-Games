@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
@@ -101,7 +101,5 @@ export class ProfileService {
     await this.findById(id);
 
     await this.prisma.profile.delete({ where: { id } });
-
-    throw new HttpException('', 204);
   }
 }
