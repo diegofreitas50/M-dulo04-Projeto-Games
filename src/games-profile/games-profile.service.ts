@@ -46,7 +46,7 @@ export class GamesProfileService {
       throw new NotFoundException(`Registro com id '${id}' não encontrado.`);
     }
 
-    return await this.prisma.gamesProfile.findMany({
+    const allGames = await this.prisma.gamesProfile.findMany({
       where: { profileId: id },
       select: {
         id: true,
@@ -64,6 +64,13 @@ export class GamesProfileService {
         favorite: true,
       },
     });
+    const favoritesGames = allGames.filter(
+      (element: { favorite: boolean; }) => element.favorite == true,
+    );
+    const gamesGender = await this.prisma.gender.findMany({
+      select: { name: true, games: { select: { title: true } } },
+    });
+    return [allGames, favoritesGames, gamesGender];
   }
 
   async findById(id: string) {
