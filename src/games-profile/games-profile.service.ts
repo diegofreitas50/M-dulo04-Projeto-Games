@@ -64,13 +64,11 @@ export class GamesProfileService {
         favorite: true,
       },
     });
-    const favoritesGames = allGames.filter(
-      (element: { favorite: boolean; }) => element.favorite == true,
-    );
+
     const gamesGender = await this.prisma.gender.findMany({
       select: { name: true, games: { select: { title: true } } },
     });
-    return [allGames, favoritesGames, gamesGender];
+    return [allGames, gamesGender];
   }
 
   async findById(id: string) {
