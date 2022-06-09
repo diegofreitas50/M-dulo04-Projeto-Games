@@ -20,6 +20,7 @@ export class GamesProfileService {
       .create({
         data,
         select: {
+          id: true,
           game: {
             select: {
               id: true,
