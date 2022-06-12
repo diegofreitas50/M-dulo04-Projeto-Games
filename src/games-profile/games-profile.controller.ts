@@ -8,17 +8,21 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { GamesProfileService } from './games-profile.service';
 import { CreateGamesProfileDto } from './dto/create-games-profile.dto';
 import { UpdateGamesProfileDto } from './dto/update-games-profile.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags('games-profile')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller()
 export class GamesProfileController {
   constructor(private readonly gamesProfileService: GamesProfileService) {}
 
+  @ApiTags('games-profile')
   @Post('/games-profile')
   @ApiOperation({
     summary: 'Adicionar jogo ao Perfil (addGame).',
@@ -27,6 +31,7 @@ export class GamesProfileController {
     return this.gamesProfileService.addGame(dto);
   }
 
+  @ApiTags('homepage')
   @Get('homepage/:profileId')
   @ApiOperation({
     summary: 'Lista de Jogos do perfil pelo Id.',
@@ -35,6 +40,7 @@ export class GamesProfileController {
     return this.gamesProfileService.findOneProfile(id);
   }
 
+  @ApiTags('games-profile')
   @Patch('games-profile/:gamesProfileId')
   @ApiOperation({
     summary: 'Favoritar ou desfavoritar um jogo pelo Id do addGame. ',
@@ -46,6 +52,7 @@ export class GamesProfileController {
     return this.gamesProfileService.updateFav(id, dto);
   }
 
+  @ApiTags('games-profile')
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('games-profile/:gamesProfileId')
   @ApiOperation({

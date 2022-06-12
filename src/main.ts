@@ -14,11 +14,13 @@ async function bootstrap() {
     .setVersion('1.0.0')
     .addTag('status')
     .addTag('auth')
+    .addTag('create-user')
     .addTag('user')
     .addTag('profile')
     .addTag('game')
     .addTag('gender')
     .addTag('games-profile')
+    .addTag('homepage')
     .addBearerAuth()
     .build();
 

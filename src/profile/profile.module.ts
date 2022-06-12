@@ -3,9 +3,10 @@ import { ProfileService } from './profile.service';
 
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ProfileController } from './profile.controller';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, PassportModule.register({ defaultStrategy: 'jwt' })],
   controllers: [ProfileController],
   providers: [ProfileService]
 })
