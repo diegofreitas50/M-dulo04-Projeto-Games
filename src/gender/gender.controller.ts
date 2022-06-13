@@ -16,6 +16,8 @@ import { UpdateGenderDto } from './dto/update-gender.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Gender } from './entities/gender.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/user/entities/user.entity';
+import { LoggedUser } from 'src/auth/logged-user.decorator';
 
 @ApiTags('gender')
 @UseGuards(AuthGuard())
@@ -26,17 +28,17 @@ export class GenderController {
 
   @Post()
   @ApiOperation({
-    summary: 'Criar novo Gênero.',
+    summary: 'Criar novo Gênero. Somente para Admin.',
   })
-  create(@Body() dto: CreateGenderDto) {
-    return this.genderService.create(dto);
+  create(@LoggedUser() user: User, @Body() dto: CreateGenderDto): Promise<Gender> {
+    return this.genderService.create(user, dto);
   }
 
   @Get()
   @ApiOperation({
     summary: 'Listar todos os Gêneros.',
   })
-  findAll() {
+  findAll(): Promise<Gender[]> {
     return this.genderService.findAll();
   }
 
@@ -44,27 +46,28 @@ export class GenderController {
   @ApiOperation({
     summary: 'Visualizar um gênero pelo ID.',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Gender> {
     return this.genderService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Editar gênero pelo ID.',
+    summary: 'Editar gênero pelo ID. Somente para Admin.',
   })
   update(
+    @LoggedUser() user: User,
     @Param('id') id: string,
     @Body() dto: UpdateGenderDto,
-  ) {
-    return this.genderService.update(id, dto);
+  ): Promise<Gender> {
+    return this.genderService.update(user, id, dto);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   @ApiOperation({
-    summary: 'Deletar gênero pelo ID.',
+    summary: 'Deletar gênero pelo ID. Somente para Admin.',
   })
-  delete(@Param('id') id: string) {
-    return this.genderService.delete(id);
+  delete(@LoggedUser() user: User, @Param('id') id: string) {
+    return this.genderService.delete(user, id);
   }
 }

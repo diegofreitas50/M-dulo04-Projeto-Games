@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsPositive, IsString, IsUrl, IsUUID } from 'class-validator';
+import { IsNumber, IsOptional, IsPositive, IsString, IsUrl } from 'class-validator';
 
 export class CreateGameDto {
   @IsString()

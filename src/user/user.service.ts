@@ -6,6 +6,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
+import { isAdmin } from 'src/utils/is-admin.util';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -42,7 +43,9 @@ export class UserService {
       .catch(handleError);
   }
 
-  async findAll() {
+  async findAll(user: User) {
+    isAdmin(user);
+
     const allUsers = await this.prisma.user.findMany({
       select: this.userSelect,
     });
@@ -67,7 +70,9 @@ export class UserService {
     return record;
   }
 
-  async findOne(id: string) {
+  async findOne(user: User, id: string) {
+    isAdmin(user);
+
     await this.findById(id);
 
     return await this.prisma.user.findUnique({
@@ -76,7 +81,9 @@ export class UserService {
     });
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(user: User, id: string, dto: UpdateUserDto) {
+    isAdmin(user);
+
     await this.findById(id);
 
     if (dto.password) {
@@ -98,7 +105,9 @@ export class UserService {
       .catch(handleError);
   }
 
-  async delete(id: string) {
+  async delete(user: User, id: string) {
+    isAdmin(user);
+    
     await this.findById(id);
 
     await this.prisma.user.delete({ where: { id } });

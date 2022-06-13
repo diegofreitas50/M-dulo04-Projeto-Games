@@ -4,17 +4,22 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
+import { isAdmin } from '../utils/is-admin.util';
+import { User } from 'src/user/entities/user.entity';
+import { Game } from './entities/game.entity';
 
 @Injectable()
 export class GameService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateGameDto) {
+  async create(user: User, dto: CreateGameDto) {
+    isAdmin(user);
+
     const data: Prisma.GameCreateInput = {
       genders: {
         connectOrCreate: {
-          create: { name: dto.genders },
-          where: { name: dto.genders },
+          create: { name: this.dataTreatment(dto.genders) },
+          where: { name: this.dataTreatment(dto.genders) },
         },
       },
 
@@ -30,7 +35,7 @@ export class GameService {
     return await this.prisma.game.create({ data }).catch(handleError);
   }
 
-  async findAll() {
+  async findAll(): Promise<Game[]> {
     const allGames = await this.prisma.game.findMany({
       include: {
         genders: true,
@@ -54,7 +59,7 @@ export class GameService {
     return record;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Game> {
     await this.findById(id);
 
     return await this.prisma.game.findUnique({
@@ -63,14 +68,16 @@ export class GameService {
     });
   }
 
-  async update(id: string, dto: UpdateGameDto) {
+  async update(user: User, id: string, dto: UpdateGameDto): Promise<Game> {
+    isAdmin(user);
+
     await this.findById(id);
 
     const data: Prisma.GameUpdateInput = {
       genders: {
         connectOrCreate: {
-          create: { name: dto.genders },
-          where: { name: dto.genders },
+          create: { name: this.dataTreatment(dto.genders) },
+          where: { name: this.dataTreatment(dto.genders) },
         },
       },
     };
@@ -78,9 +85,18 @@ export class GameService {
     return this.prisma.game.update({ where: { id }, data }).catch(handleError);
   }
 
-  async delete(id: string) {
+  async delete(user: User, id: string) {
+    isAdmin(user);
+
     await this.findById(id);
 
     await this.prisma.game.delete({ where: { id } });
+  }
+
+  dataTreatment(data: string) {
+    return data
+      .normalize('NFD')
+      .replace(/[^a-zA-Zs]/g, '')
+      .toLowerCase();
   }
 }
