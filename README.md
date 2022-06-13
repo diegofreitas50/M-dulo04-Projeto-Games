@@ -53,7 +53,7 @@ $ npm run start:prod
 
 ## Autores
 
-* **Diego Freitas** - [GITHUB](https://github.com/diegofreitas50)
+* **Diego Freitas** - [Github](https://github.com/diegofreitas50), [Linkedin](https://www.linkedin.com/in/diegofreitas50/)
 
 
 ## Licença
