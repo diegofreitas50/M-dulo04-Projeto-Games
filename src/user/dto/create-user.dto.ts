@@ -47,7 +47,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Declaração de Adm.',
-    example: false,
+    example: true,
   })
   isAdmin: boolean;
 }
