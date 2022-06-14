@@ -39,6 +39,8 @@ export class ProfileService {
   }
 
   async findAll(userId: string) {
+    await this.findById(userId);
+
     const allProfilles = await this.prisma.profile.findMany({
       where: { userId },
       select: {
