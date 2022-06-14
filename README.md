@@ -4,6 +4,12 @@
 
 Projeto de aplicação backend baseado na plataforma Xbox Live, no qual usuários podem se cadastrar, selecionar diferentes perfis e acessar os jogos disponíveis.
 
+## Deploy da aplicação [clicando aqui](https://modulo04-projeto-games-production.up.railway.app/api)
+
+```
+https://modulo04-projeto-games-production.up.railway.app/api
+```
+
 ## Para clonar o projeto
 
 ```
@@ -41,11 +47,13 @@ $ npm run start:prod
 * TypeScript
 * NestJS
 * PostgreeSQL
+* Swagger
+* railway
 
 
 ## Autores
 
-* **Diego Freitas** - [GITHUB](https://github.com/diegofreitas50)
+* **Diego Freitas** - [Github](https://github.com/diegofreitas50), [Linkedin](https://www.linkedin.com/in/diegofreitas50/)
 
 
 ## Licença
