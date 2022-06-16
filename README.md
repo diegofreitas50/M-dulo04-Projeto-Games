@@ -46,7 +46,7 @@ $ npm run start:prod
 * NodeJS
 * TypeScript
 * NestJS
-* PostgreeSQL
+* PostgreSQL
 * Swagger
 * railway
 
